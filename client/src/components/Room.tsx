@@ -2,6 +2,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSocket } from "../context/socketProvider";
 import ReactPlayer from "react-player";
 import PeerService from "../utils/peerService";
+import { FaRegCopy } from "react-icons/fa";
+// import { FaVideoSlash } from "react-icons/fa";
+import { FaVideo } from "react-icons/fa";
+import { IoMdMic } from "react-icons/io";
+// import { IoMdMicOff } from "react-icons/io";
+import { MdCallEnd } from "react-icons/md";
 
 interface IEUserRoom {
   email: string;
@@ -163,46 +169,57 @@ export const Room = () => {
   }, [socket, handleJoinUser, handleIncomingCall, handleCallAccepted, handleIncomingNegotiation, handleFinalNegotiation]);
 
   return (
-    <div>
-      <h2> THIS IS ROOM PAGE</h2>
-      <h4>{remoteSocketId ? "connected" : "no one in room"}</h4>
-      {remoteSocketId ? (
-        <button
-          onClick={handleCallUser}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Call
-        </button>
-      ) : null}
-
-    {myStream ? (
+    <>
+      <div className="flex justify-center items-center flex-1 flex-col">
+        <div className="flex justify-center items-center">
+          {myStream && (
+            <ReactPlayer
+              className="w-full aspect-video md:aspect-square mx-1"
+              playing
+              url={myStream}
+              muted
+            />
+          )}
+          {remoteStream && (
+            <ReactPlayer
+              className="w-full aspect-video md:aspect-square mx-1"
+              playing
+              url={remoteStream}
+              muted
+            />
+          )}
+        </div>
+        <div className="my-5">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full  mx-3">
+            <FaRegCopy />
+          </button>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-3">
+            <FaVideo />
+          </button>
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-3">
+            <IoMdMic />
+          </button>
+          <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full mx-3">
+            <MdCallEnd />
+          </button>
+          {myStream &&
         <button
           onClick={addStreamTracks}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Add stream
         </button>
-      ) : null}
-      {myStream ? (
-        <><h2>My stream</h2><ReactPlayer
-        className="w-full aspect-video md:aspect-square"
-        playing
-        url={myStream}
-        muted
-      /></>
-      ) : null}
-
-      {remoteStream ? (
-        <>
-        <h2>Remote Stream</h2>
-        <ReactPlayer
-          className="w-full aspect-video md:aspect-square"
-          playing
-          url={remoteStream}
-          muted
-        />
-        </>
-      ) : null}
-    </div>
+      }
+            {remoteSocketId && 
+        <button
+          onClick={handleCallUser}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Call
+        </button>
+      }
+        </div>
+      </div>
+    </>
   );
 };
